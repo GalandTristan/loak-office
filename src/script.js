@@ -17,6 +17,7 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+scene.background = new THREE.Color( 0xEAF5FF );
 
 /**
  * Loaders
