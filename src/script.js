@@ -7,10 +7,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 /**
  * Base
  */
-// Debug
-const gui = new GUI({
-    width: 400
-})
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -171,7 +168,27 @@ gltfLoader.load(
         
 
         scene.add(gltf.scene)
+
+        // Calculer les dimensions du modèle
+        const boundingBox = new THREE.Box3().setFromObject(gltf.scene)
+        const center = new THREE.Vector3()
+        const size = new THREE.Vector3()
+        boundingBox.getCenter(center)
+        boundingBox.getSize(size)
+
+        // Recentrer le modèle si besoin
+        gltf.scene.position.sub(center)
+
+        // Repositionner la caméra
+        const maxDim = Math.max(size.x, size.y, size.z)
+        const fov = camera.fov * (Math.PI / 180)
+        let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2))
+
+        camera.position.set(0, 0, 0) 
+        controls.target.set(0, 0, 1) 
+        controls.update()
      }
+     
 )
 
 /**
@@ -202,8 +219,8 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 6
-camera.position.y = 8
+camera.position.x = 0
+camera.position.y = 0
 camera.position.z = 0
 scene.add(camera)
 
